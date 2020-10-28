@@ -1,21 +1,23 @@
-version: '3'
-
+version: "3.7"
 services:
-  django:
-    image: hitlerway/app_django
-    command: ["python", "backendapi/manage.py", "runserver", "0.0.0.0:8000"]
+  backend:
+    image: hitlerway/backend:backend
+    
     volumes:
-      - ./app_django:/api/app_django
+      - ./backend:/app/backend
     ports:
       - "8000:8000"
-  frontend:
-    image: 
-      hitlerway/app_frontend
-    environment:
-      - NODE_ENV=production
-    command: ["npm", "start"]
     stdin_open: true
+    tty: true
+    command: ["python", "backendapi/manage.py", "runserver", "0.0.0.0:8000"]
+  frontend:
+    image: hitlerway/frontend:frontend
     volumes:
       - ./frontend:/app
     ports:
       - "3000:3000"
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      - backend
+    command: npm start
